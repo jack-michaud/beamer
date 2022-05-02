@@ -183,14 +183,22 @@ class _AppScreenState extends State<AppScreen> {
 
   final routerDelegates = [
     BeamerDelegate(
-      initialPath: '/books',
-      locationBuilder: (routeInformation, _) {
-        if (routeInformation.location!.contains('books')) {
-          return BooksLocation(routeInformation);
-        }
-        return NotFound(path: routeInformation.location!);
-      },
-    ),
+        initialPath: '/books',
+        locationBuilder: (routeInformation, _) {
+          if (routeInformation.location!.contains('books')) {
+            return BooksLocation(routeInformation);
+          }
+          return NotFound(path: routeInformation.location!);
+        },
+        guards: [
+          BeamGuard(
+              pathPatterns: ["/books"],
+              check: (context, location) {
+                // Auth check. Oh no, I need to go to articles!
+                return false;
+              },
+              beamToNamed: (_, __) => "/articles"),
+        ]),
     BeamerDelegate(
       initialPath: '/articles',
       locationBuilder: (routeInformation, _) {
